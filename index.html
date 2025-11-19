@@ -1,127 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Student Attendance System</title>
+    <meta charset="UTF-8" />
+    <title>Smart Group Photo Attendance System</title>
+
+    <!-- Load face-api.js -->
+    <script defer src="https://unpkg.com/face-api.js"></script>
+
+    <!-- Load your script -->
+    <script defer src="script.js"></script>
+
     <style>
         body {
             font-family: Arial;
+            text-align: center;
+            background: #eef1f5;
             padding: 20px;
-            background: #f2f2f2;
         }
-        .container {
+
+        #upload-box {
+            width: 60%;
+            margin: 20px auto;
+            border: 3px dashed #007bff;
+            padding: 40px;
             background: white;
-            padding: 20px;
+            border-radius: 12px;
+        }
+
+        #groupPhoto {
+            max-width: 90%;
+            margin-top: 20px;
             border-radius: 10px;
-            max-width: 500px;
-            margin: auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        input, select, button {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 5px;
-            border: 1px solid #aaa;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background: #45a049;
+
+        #attendance {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            width: 60%;
+            margin-inline: auto;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Student Attendance Form</h2>
+    <h1>Smart Group Photo Attendance System (AI Based)</h1>
 
-    <label>Student Name</label>
-    <input type="text" id="studentName" placeholder="Enter student name">
+    <div id="upload-box">
+        <h3>Upload Class Group Photo</h3>
+        <input type="file" id="photoInput" accept="image/*" />
+    </div>
 
-    <label>Roll Number</label>
-    <input type="number" id="rollNumber" placeholder="Enter roll number">
+    <img id="groupPhoto" />
 
-    <label>Date</label>
-    <input type="date" id="date">
-
-    <label>Subject</label>
-    <select id="subject">
-        <option>ENGINEERING PHYSICS</option>
-        <option>ENGINEERING MATHS 1</option>
-        <option>ENGINEERING MATHS 2</option>
-        <option>ENGINEERING MECHANICS</option>
-        <option>ENGINEERING CHEMISTRY</option>
-    </select>
-
-    <label>Teacher Name</label>
-    <select id="teacher">
-        <option>DR. SAWANT SIR</option>
-        <option>DR. PHULPAGER SIR</option>
-        <option>DR. SUREKHA MUNDE</option>
-    </select>
-
-    <button onclick="saveAttendance()">Save Attendance</button>
-</div>
-
-<!-- Firebase Scripts -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
-<script>
-
-    // 🔥🔥🔥 PASTE YOUR FIREBASE CONFIG HERE 🔥🔥🔥
-const firebaseConfig = {
-  apiKey: "AIzaSyDUrMm2ExlhcSpQ1-sROzy_7oIY4mpu3Eo",
-  authDomain: "smart-attendance-ai-4bc4f.firebaseapp.com",
-  databaseURL: "https://smart-attendance-ai-4bc4f-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "smart-attendance-ai-4bc4f",
-  storageBucket: "smart-attendance-ai-4bc4f.firebasestorage.app",
-  messagingSenderId: "267157518712",
-  appId: "1:267157518712:web:2404a9cab8d7e0d522b08d"
-};
-
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-
-    function saveAttendance() {
-        let name = document.getElementById("studentName").value;
-        let roll = document.getElementById("rollNumber").value;
-        let date = document.getElementById("date").value;
-        let subject = document.getElementById("subject").value;
-        let teacher = document.getElementById("teacher").value;
-
-        if (name === "" || roll === "" || date === "") {
-            alert("Please fill all fields!");
-            return;
-        }
-
-        // Unique ID
-        let id = Date.now();
-
-        db.ref("attendance/" + id).set({
-            studentName: name,
-            rollNumber: roll,
-            date: date,
-            subject: subject,
-            teacher: teacher
-        });
-
-        alert("Attendance Saved Successfully!");
-
-        // Clear fields
-        document.getElementById("studentName").value = "";
-        document.getElementById("rollNumber").value = "";
-        document.getElementById("date").value = "";
-    }
-
-</script>
+    <div id="attendance">
+        <h3>Detected Students</h3>
+        <ul id="attendanceList"></ul>
+    </div>
 
 </body>
 </html>
