@@ -1,24 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Attendance System</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System (Cloud Based)</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f5f5f5;
+        }
+        #cameraBox {
+            width: 70%;
+            margin: auto;
+            margin-top: 40px;
+            border: 3px solid #007bff;
+            border-radius: 12px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        button {
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #007bff;
+            color: white;
+            border: none;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
+
 <body>
 
-  <h2>Smart Attendance System (Cloud Based)</h2>
+    <h1>Smart Attendance System (Cloud Based)</h1>
 
-  <video id="video" autoplay></video>
-  <canvas id="canvas" style="display:none;"></canvas>
+    <!-- Camera Display Section -->
+    <div id="cameraBox">
+        <video id="cameraFeed" autoplay></video>
+    </div>
 
-  <div class="buttons">
-    <button id="analyze">Analyze Face</button>
-  </div>
+    <button id="analyzeBtn">Analyze Face</button>
 
-  <h3 id="result"></h3>
+    <script>
+        // Start Camera
+        const video = document.getElementById("cameraFeed");
 
-  <script src="script.js"></script>
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((error) => {
+                    console.error("Camera error:", error);
+                    alert("Camera not accessible. Check permissions.");
+                });
+        }
+    </script>
+
+    <!-- Firebase + Firestore -->
+    <script type="module">
+        // Firebase core
+        import { initializeApp } 
+        from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+        // Firestore imports
+        import { getFirestore, collection, addDoc } 
+        from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUrMm2ExlhcSpQ1-sROzy_7oIY4mpu3Eo",
+            authDomain: "smart-attendance-ai-4bc4f.firebaseapp.com",
+            projectId: "smart-attendance-ai-4bc4f",
+            storageBucket: "smart-attendance-ai-4bc4f.firebasestorage.app",
+            messagingSenderId: "267157518712",
+            appId: "1:267157518712:web:2404a9cab8d7e0d522b08d"
+        };
+
+        // Init Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Init Firestore
+        const db = getFirestore(app);
+
+        // Dummy Analyze Button Logic (will upload to cloud)
+        document.getElementById("analyzeBtn").addEventListener("click", async () => {
+            const studentName = "Unknown Student";  // Later AI model will fill this
+
+            try {
+                await addDoc(collection(db, "attendance"), {
+                    name: studentName,
+                    time: new Date().toISOString()
+                });
+
+                alert("Attendance Uploaded to Cloud!");
+            } catch (e) {
+                console.error("Error adding document:", e);
+                alert("Failed to upload attendance.");
+            }
+        });
+    </script>
+
 </body>
 </html>
